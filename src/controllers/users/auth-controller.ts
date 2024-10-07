@@ -7,9 +7,13 @@ import * as jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../../secrets";
 import { BadRequestsException } from "../../exceptions/bad-resquests";
 import { ErrorCode } from "../../exceptions/root";
+import { UnprocessableEntity } from "../../exceptions/validation";
+import { any } from "zod";
+import { SignUpSchema } from "../../schema/users";
 
 export async function signup(request: FastifyRequest<{ Body: RegisterServiceRequest }>, reply: FastifyReply) {
-    const { email, password, name } = request.body;
+    
+    const { email, password, name } = SignUpSchema.parse(request.body);
 
     let user = await prisma.user.findUnique({
         where: {
@@ -18,7 +22,7 @@ export async function signup(request: FastifyRequest<{ Body: RegisterServiceRequ
     });
 
     if(user) {
-        throw new BadRequestsException("User already exists", ErrorCode.USER_ALREADY_EXISTS);
+        throw new BadRequestsException("User already exists", ErrorCode.USER_ALREADY_EXISTS); // fix: this never happens since the catch block gets executed when a user already exists
     }
 
     user = await prisma.user.create({
@@ -28,7 +32,7 @@ export async function signup(request: FastifyRequest<{ Body: RegisterServiceRequ
             password: hashSync(password, 10)
         }
     });
-    
+
     reply.send(user);
 }
 
@@ -46,7 +50,7 @@ export async function login(request: FastifyRequest<{ Body: LoginServiceRequest 
     }
 
     if(!compareSync(password, user.password)) {
-        throw new BadRequestsException("Incorrect password", ErrorCode.INCORRECT_PASSWORD);
+        throw new BadRequestsException("Incorrect password", ErrorCode.INCORRECT_PASSWORD); 
     }
 
     const token = jwt.sign({ 
