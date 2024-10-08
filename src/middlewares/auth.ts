@@ -3,10 +3,7 @@ import { UnauthorizedException } from "../exceptions/unauthorized";
 import { ErrorCode } from "../exceptions/root";
 import * as jwt from "jsonwebtoken";
 import { JWT_SECRET } from "../secrets";
-import { PrismaClient } from "@prisma/client";
-
-// Instanciar o PrismaClient uma única vez
-const prisma = new PrismaClient();
+import { prisma } from "../lib/prisma";
 
 export const authMiddleware = async (request: FastifyRequest, reply: FastifyReply) => {
     // 1. Extrair o token do cabeçalho
