@@ -59,3 +59,7 @@ export async function login(request: FastifyRequest<{ Body: LoginServiceRequest 
 
     reply.send({user, token});
 }
+
+export async function me(request: FastifyRequest, reply: FastifyReply) {
+    reply.send(request.user);
+}
