@@ -8,8 +8,8 @@ import { JWT_SECRET } from "../../secrets";
 import { BadRequestsException } from "../../exceptions/bad-resquests";
 import { ErrorCode } from "../../exceptions/root";
 import { UnprocessableEntity } from "../../exceptions/validation";
-import { any } from "zod";
 import { SignUpSchema } from "../../schema/users";
+import { LoginSchema } from "../../schema/users";
 
 export async function signup(request: FastifyRequest<{ Body: RegisterServiceRequest }>, reply: FastifyReply) {
     
@@ -37,7 +37,7 @@ export async function signup(request: FastifyRequest<{ Body: RegisterServiceRequ
 }
 
 export async function login(request: FastifyRequest<{ Body: LoginServiceRequest }>, reply: FastifyReply) {
-    const { email, password } = request.body;
+    const { email, password } = LoginSchema.parse(request.body);
 
     let user = await prisma.user.findUnique({
         where: {
