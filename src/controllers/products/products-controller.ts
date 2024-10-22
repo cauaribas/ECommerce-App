@@ -36,7 +36,7 @@ export async function createProduct(request: FastifyRequest<{ Body: RegisterServ
     reply.send(product);
 }
 
-export async function findProductById(request: FastifyRequest <{ Params: Params }>, reply: FastifyReply){
+export async function getProductById(request: FastifyRequest<{Params: Params}>, reply: FastifyReply){
     try {
         const productId = Number(request.params.id);
 
@@ -44,8 +44,7 @@ export async function findProductById(request: FastifyRequest <{ Params: Params 
             where: {
                 id: productId
             }
-        })
-
+        });
         reply.send(product);
     } catch (error) {
         throw new NotFoundException("Product Not Found", ErrorCode.NOT_FOUND, 404);
@@ -94,7 +93,7 @@ export async function deleteProduct(request: FastifyRequest<{ Params: Params }>,
     }
 }
 
-export async function findAllProducts(request: FastifyRequest, reply: FastifyReply){
+export async function fetchAllProducts(request: FastifyRequest, reply: FastifyReply){
     try {
         const { page = 1, pageSize = 10, orderBy = "asc" } = request.query as QueryParams;
 
