@@ -24,3 +24,9 @@ export const ParamsSchema = z.object({
     skip: z.number().optional(),
     take: z.number().optional(),
 });
+
+export const updateUsersSchema = z.object({
+    name: z.string().optional(),
+    defaultShippingAddress: z.number().optional(),
+    defaultBillingAddress: z.number().optional(),
+});
