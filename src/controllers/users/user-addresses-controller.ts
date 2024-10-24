@@ -4,6 +4,7 @@ import { NotFoundException } from "../../exceptions/not-found";
 import { ErrorCode } from "../../exceptions/root";
 import { prisma } from "../../lib/prisma";
 import { InternalException } from "../../exceptions/internal-exception";
+
 export async function createAddress(request: FastifyRequest, reply: FastifyReply) {
     
     const addressData = AddressSchema.parse(request.body);
