@@ -13,3 +13,13 @@ export const UpdateProductSchema = z.object({
     price: z.number().gt(0).optional(),
     tags: z.string().array().optional(),
 });
+
+export const QueryParamsSchema = z.object({
+    page: z.number().optional(),
+    pageSize: z.number().optional(),
+    orderBy: z.string().optional(),
+});
+
+export const ParamsSchema = z.object({
+    id: z.number(),
+});
