@@ -19,7 +19,8 @@ enum Role {
 }
 
 model User {
-  id       Int    @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
   name     String
   email    String @unique
   password String
@@ -32,19 +33,23 @@ model User {
   updatedAt DateTime @updatedAt
 
   Addresses Address[]
+  CartItems CartItems[]
 
   @@map("users")
 }
 
 model Address {
-  id        Int      @id @default(autoincrement())
-  lineOne   String
-  lineTwo   String?
-  city      String
-  country   String
-  pincode   String
-  userId    Int
-  user      User     @relation(fields: [userId], references: [id])
+  id Int @id @default(autoincrement())
+
+  lineOne String
+  lineTwo String?
+  city    String
+  country String
+  pincode String
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
 
@@ -52,13 +57,34 @@ model Address {
 }
 
 model Product {
-  id          Int      @id @default(autoincrement())
+  id Int @id @default(autoincrement())
+
   name        String
-  description String   @db.Text
+  description String  @db.Text
   price       Decimal
   tags        String
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  CartItems CartItems[]
 
   @@map("products")
+}
+
+model CartItems {
+  id Int @id @default(autoincrement())
+
+  quantity Int
+
+  userId Int
+  user   User @relation(fields: [userId], references: [id])
+
+  productId Int
+  product   Product @relation(fields: [productId], references: [id])
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@map("cart_items")
 }
