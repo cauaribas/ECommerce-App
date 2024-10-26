@@ -25,7 +25,7 @@ export async function createAddress(request: FastifyRequest, reply: FastifyReply
 }
 
 export async function updateAddress(request: FastifyRequest, reply: FastifyReply) {
-
+    // to do
 }
 
 export async function deleteAddress(request: FastifyRequest, reply: FastifyReply) {
