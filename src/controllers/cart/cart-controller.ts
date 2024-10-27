@@ -6,16 +6,28 @@ import { Product } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 
 export async function addItemToCart(request: FastifyRequest, reply: FastifyReply) {
-    const validatedData = CreateCartSchema.parse(request.body);
-
-    let product: Product;
+    const { productId, quantity } = CreateCartSchema.parse(request.body);
 
     try {
-        await prisma.product.findUnique({
+        const product = await prisma.product.findUnique({
             where: {
-                id: validatedData.productId
+                id: productId
             }
         });
+
+        if (!product) {
+            throw new NotFoundException("Product not found", null, ErrorCode.PRODUCT_NOT_FOUND);
+        }
+
+        const cart = await prisma.cartItems.create({
+            data: {
+                userId: request.user.id,
+                productId: product.id,
+                quantity,
+            }
+        });
+        reply.send(cart);
+
     } catch (error) {
         throw new NotFoundException("Failed to add item to cart", error ,ErrorCode.PRODUCT_NOT_FOUND);
     }
