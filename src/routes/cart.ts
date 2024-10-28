@@ -6,6 +6,6 @@ import { addItemToCart, changeQuantity, deleteItemFromCart, getCart } from '../c
 export async function cartRoutes(app: FastifyInstance) {
     app.post('/', { onRequest: [ authMiddleware ] }, errorHandler(addItemToCart));
     app.delete('/:id', { onRequest: [ authMiddleware ] }, errorHandler(deleteItemFromCart));
-    app.put('/', { onRequest: [ authMiddleware ] }, errorHandler(changeQuantity));
+    app.put('/:id', { onRequest: [ authMiddleware ] }, errorHandler(changeQuantity));
     app.get('/', { onRequest: [ authMiddleware ] }, errorHandler(getCart));
 }
