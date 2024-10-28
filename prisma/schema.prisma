@@ -107,6 +107,7 @@ model Order {
 
   netAmount Decimal
   address   String
+  status    OrderEventStatus @default(PENDING)
 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
