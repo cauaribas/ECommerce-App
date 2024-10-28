@@ -8,16 +8,14 @@ import { QueryParamsSchema, ParamsSchema } from "../../schema/products";
 
 export async function createProduct(request: FastifyRequest, reply: FastifyReply){
     
-    const { name, description, price, tags } = RegisterProductSchema.parse(request.body);
+    const { tags, ...productData } = RegisterProductSchema.parse(request.body);
 
     const product = await prisma.product.create({
         
         // ["coffe", "tea", "juice"] => "coffe,tea,juice"
         // Create a validator for this request
         data: {
-            name,
-            description,
-            price,
+            ...productData,
             tags: tags.join(","),
         }
     });
