@@ -26,7 +26,7 @@ export async function updateUsers(request: FastifyRequest, reply: FastifyReply) 
             }
 
         } catch (error) {
-            throw new NotFoundException('Shipping address not found', null, ErrorCode.ADDRESS_NOT_FOUND);
+            throw new NotFoundException('Shipping address not found', ErrorCode.ADDRESS_NOT_FOUND, error);
         }
     }
 
@@ -43,16 +43,16 @@ export async function updateUsers(request: FastifyRequest, reply: FastifyReply) 
             }
 
         } catch (error) {
-            throw new NotFoundException('Billing address not found', null, ErrorCode.ADDRESS_NOT_FOUND);
+            throw new NotFoundException('Billing address not found', ErrorCode.ADDRESS_NOT_FOUND, error);
         }
     }
 
-    const updateUser = await prisma.user.update({
+    const updatedUser = await prisma.user.update({
         where: { 
             id: request.user.id
         }, 
         data: validatedData,
     });
 
-    reply.send(updateUser);
+    reply.send(updatedUser);
 }
