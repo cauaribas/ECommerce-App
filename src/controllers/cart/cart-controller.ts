@@ -2,11 +2,9 @@ import { FastifyReply, FastifyRequest } from "fastify";
 import { CreateCartSchema, UpdateCartSchema } from "../../schema/cart";
 import { NotFoundException } from "../../exceptions/not-found";
 import { ErrorCode } from "../../exceptions/root";
-import { Product } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { ParamsSchema } from "../../schema/users";
 import { ConflictException } from "../../exceptions/conflict-exception";
-import { triggerAsyncId } from "async_hooks";
 
 export async function addItemToCart(request: FastifyRequest, reply: FastifyReply) {
     const { productId, quantity } = CreateCartSchema.parse(request.body);
@@ -19,7 +17,7 @@ export async function addItemToCart(request: FastifyRequest, reply: FastifyReply
         });
 
         if (!product) {
-            throw new NotFoundException("Product not found", null, ErrorCode.PRODUCT_NOT_FOUND);
+            throw new NotFoundException("Product not found", ErrorCode.PRODUCT_NOT_FOUND);
         }
 
         const existingCartItem = await prisma.cartItem.findFirst({
@@ -43,7 +41,7 @@ export async function addItemToCart(request: FastifyRequest, reply: FastifyReply
         reply.send(cart);
 
     } catch (error) {
-        throw new NotFoundException("Failed to add item to cart", error ,ErrorCode.PRODUCT_NOT_FOUND);
+        throw new NotFoundException("Failed to add item to cart", ErrorCode.PRODUCT_NOT_FOUND, error);
     }
 }
 
@@ -60,7 +58,7 @@ export async function deleteItemFromCart(request: FastifyRequest, reply: Fastify
 
         reply.send({success: true});
     } catch (error) {
-        throw new NotFoundException("Failed to delete item from cart", error, ErrorCode.PRODUCT_NOT_FOUND);
+        throw new NotFoundException("Failed to delete item from cart", ErrorCode.PRODUCT_NOT_FOUND, error);
     }
 }
 
@@ -82,7 +80,7 @@ export async function changeQuantity(request: FastifyRequest, reply: FastifyRepl
 
         reply.send(updatedCart);
     } catch (error) {
-        throw new NotFoundException("Failed to update cart item", error, ErrorCode.PRODUCT_NOT_FOUND);
+        throw new NotFoundException("Failed to update cart item", ErrorCode.PRODUCT_NOT_FOUND, error);
     }
 }
 
@@ -99,6 +97,6 @@ export async function getCart(request: FastifyRequest, reply: FastifyReply) {
 
         reply.send(cart);
     } catch (error) {
-        throw new NotFoundException("Failed to get cart", error, ErrorCode.PRODUCT_NOT_FOUND);
+        throw new NotFoundException("Failed to get cart", ErrorCode.PRODUCT_NOT_FOUND, error);
     }
 }
