@@ -43,7 +43,7 @@ export async function deleteAddress(request: FastifyRequest, reply: FastifyReply
         reply.send({message: "Address deleted successfully"});
 
     } catch (error) {
-        throw new NotFoundException("Failed to delete address", error, ErrorCode.ADDRESS_NOT_FOUND);
+        throw new NotFoundException("Failed to delete address", ErrorCode.ADDRESS_NOT_FOUND, error);
     }
 }
 
