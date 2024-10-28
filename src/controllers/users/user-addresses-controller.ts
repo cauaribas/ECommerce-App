@@ -36,7 +36,7 @@ export async function deleteAddress(request: FastifyRequest, reply: FastifyReply
         await prisma.address.delete({
             where: {
                 userId: request.user.id,
-                id: parseInt(id as any),
+                id,
             }
         });
 
