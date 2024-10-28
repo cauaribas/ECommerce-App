@@ -83,10 +83,11 @@ export async function createOrder(request: FastifyRequest, reply: FastifyReply) 
 
 export async function listOrders(request: FastifyRequest, reply: FastifyReply) {
     try {
+
         const orders = await prisma.order.findMany({
             where: {
                 userId: request.user.id,
-            }
+        }
         });
 
         reply.send(orders);
