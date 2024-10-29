@@ -3,6 +3,7 @@ import { prisma } from "../../lib/prisma";
 import { ParamsSchema } from "../../schema/users";
 import { NotFoundException } from "../../exceptions/not-found";
 import { ErrorCode } from "../../exceptions/root";
+import { ChangeStatusSchema } from "../../schema/orders";
 
 export async function createOrder(request: FastifyRequest, reply: FastifyReply) {
     // 1. Create a transaction
@@ -125,6 +126,29 @@ export async function cancelOrder(request: FastifyRequest, reply: FastifyReply) 
         });
     } catch (error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND, error);
+    }
+}
+
+export async function changeStatus(request: FastifyRequest, reply: FastifyReply) {
+
+    try {
+        const { id } = ParamsSchema.parse(request.params);
+        
+        const { status } = ChangeStatusSchema.parse(request.body);
+
+        const order = await prisma.order.update({
+            where: {
+                id,
+                userId: request.user.id,
+            },
+            data: {
+                status,
+            }
+        });
+
+        reply.send(order);
+    } catch (error) {
+        throw new Error("Failed to change order status");
     }
 }
 
