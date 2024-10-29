@@ -14,4 +14,4 @@ app.register(authRoutes, { prefix: '/auth' });
 app.register(productsRoutes);
 app.register(usersRoutes, { prefix: '/users' });
 app.register(cartRoutes, { prefix: '/cart' });
-app.register(ordersRoutes, { prefix: '/orders' });
+app.register(ordersRoutes, { prefix: '/orders' }); 
