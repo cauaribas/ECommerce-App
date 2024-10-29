@@ -21,6 +21,9 @@ export const AddressSchema = z.object({
 
 export const ParamsSchema = z.object({
     id: z.coerce.number(),
+});
+
+export const ListUsersParamsSchema = z.object({
     skip: z.number().optional(),
     take: z.number().optional(),
 });
@@ -29,4 +32,8 @@ export const updateUsersSchema = z.object({
     name: z.string().optional(),
     defaultShippingAddress: z.number().optional(),
     defaultBillingAddress: z.number().optional(),
+});
+
+export const ChangeUserRoleSchema = z.object({
+    role: z.enum(["ADMIN", "USER"]),
 });
