@@ -1,5 +1,5 @@
 import { FastifyReply, FastifyRequest } from "fastify";
-import { updateUsersSchema } from "../../schema/users";
+import { ChangeUserRoleSchema, ListUsersParamsSchema, ParamsSchema, updateUsersSchema } from "../../schema/users";
 import { Address } from "@prisma/client";
 import { prisma } from "../../lib/prisma";
 import { NotFoundException } from "../../exceptions/not-found";
@@ -55,4 +55,60 @@ export async function updateUsers(request: FastifyRequest, reply: FastifyReply) 
     });
 
     reply.send(updatedUser);
+}
+
+export async function getUsers(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        const { skip, take } = ListUsersParamsSchema.parse(request.query);
+
+        const users = await prisma.user.findMany({
+            skip: skip || 0,
+            take: take || 5,
+        });
+
+        reply.send(users);
+    } catch (error) {
+        throw new NotFoundException('Users not found', ErrorCode.USER_NOT_FOUND, error);
+    }
+}
+
+export async function getUserById(request: FastifyRequest, reply: FastifyReply) {
+    try {
+        const { id } = ParamsSchema.parse(request.params);
+
+        const user = await prisma.user.findFirstOrThrow({
+            where: {
+                id
+            },
+            include: {
+                addresses: true
+            }
+        });
+
+        reply.send(user);
+    } catch (error) {
+        throw new NotFoundException('User not found', ErrorCode.USER_NOT_FOUND, error);
+    }
+}
+
+export async function changeUserRole(request: FastifyRequest, reply: FastifyReply) {
+    try {
+
+        const { id } = ParamsSchema.parse(request.params);
+        
+        const { role } = ChangeUserRoleSchema.parse(request.body);
+
+        const user = await prisma.user.update({
+            where: {
+                id,
+            },
+            data: {
+                role
+            }
+        });
+
+        reply.send(user);
+    } catch (error) {
+        throw new NotFoundException('User not found', ErrorCode.USER_NOT_FOUND, error);
+    }
 }
