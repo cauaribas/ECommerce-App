@@ -23,3 +23,7 @@ export const QueryParamsSchema = z.object({
 export const ParamsSchema = z.object({
     id: z.number(),
 });
+
+export const SearchSchema = z.object({
+    q: z.string(),
+});
