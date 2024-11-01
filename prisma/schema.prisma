@@ -5,7 +5,8 @@
 // Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
 
 generator client {
-  provider = "prisma-client-js"
+  provider        = "prisma-client-js"
+  previewFeatures = ["fullTextSearch"]
 }
 
 datasource db {
@@ -79,6 +80,7 @@ model Product {
   cartItems CartItem[]
   orders    OrderProduct[]
 
+  @@index([name, description, tags])
   @@map("products")
 }
 
