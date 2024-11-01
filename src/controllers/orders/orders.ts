@@ -1,9 +1,9 @@
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../lib/prisma";
-import { ParamsSchema } from "../../schema/users";
+import { ListUsersParamsSchema, ParamsSchema } from "../../schema/users";
 import { NotFoundException } from "../../exceptions/not-found";
 import { ErrorCode } from "../../exceptions/root";
-import { ChangeStatusSchema } from "../../schema/orders";
+import { ChangeStatusSchema, ListUserOrdersSchema } from "../../schema/orders";
 
 export async function createOrder(request: FastifyRequest, reply: FastifyReply) {
     // 1. Create a transaction
@@ -84,7 +84,6 @@ export async function createOrder(request: FastifyRequest, reply: FastifyReply) 
 
 export async function listOrders(request: FastifyRequest, reply: FastifyReply) {
     try {
-
         const orders = await prisma.order.findMany({
             where: {
                 userId: request.user.id,
@@ -98,9 +97,6 @@ export async function listOrders(request: FastifyRequest, reply: FastifyReply) {
 }
 
 export async function cancelOrder(request: FastifyRequest, reply: FastifyReply) {
-    
-    // 1. wrap it in a transaction
-    // 2. check if the user is cancelling his own order
     try {
         return await prisma.$transaction(async (tx) => {
             const { id } = ParamsSchema.parse(request.params);
@@ -130,7 +126,7 @@ export async function cancelOrder(request: FastifyRequest, reply: FastifyReply) 
 }
 
 export async function changeStatus(request: FastifyRequest, reply: FastifyReply) {
-
+    // 1. wrap it in a transaction
     try {
         const { id } = ParamsSchema.parse(request.params);
         
@@ -139,9 +135,15 @@ export async function changeStatus(request: FastifyRequest, reply: FastifyReply)
         const order = await prisma.order.update({
             where: {
                 id,
-                userId: request.user.id,
             },
             data: {
+                status,
+            }
+        });
+
+        await prisma.orderEvent.create({
+            data: {
+                orderId: order.id,
                 status,
             }
         });
@@ -159,7 +161,6 @@ export async function getOrderById(request: FastifyRequest, reply: FastifyReply)
         const order = await prisma.order.findFirst({
             where: {
                 id,
-                userId: request.user.id,
             }
         });
 
@@ -167,4 +168,52 @@ export async function getOrderById(request: FastifyRequest, reply: FastifyReply)
     } catch (error) {
         throw new NotFoundException("Order not found", ErrorCode.ORDER_NOT_FOUND, error);
     }
+}
+
+export async function listAllOrders(request: FastifyRequest, reply: FastifyReply) {
+    
+    const status = (request.query as any).status; // add typings
+    
+    const { skip, take } = ListUsersParamsSchema.parse(request.query);
+    
+    let whereClause = {};
+
+    if(status) {
+        whereClause = {
+            status,
+        }
+    }
+
+    const orders = await prisma.order.findMany({
+        where: whereClause,
+        skip: skip || 0,
+        take: take || 5,
+    });
+
+    reply.send(orders);
+}
+
+export async function listUsersOrders(request: FastifyRequest, reply: FastifyReply) {
+    const status = (request.query as any).status;
+    
+    const { skip, take } = ListUsersParamsSchema.parse(request.query);
+    
+    let whereClause: any = {
+        userId: (request.params as any).id,
+    };
+
+    if(status) {
+        whereClause = {
+            ...whereClause,
+            status,
+        }
+    }
+
+    const orders = await prisma.order.findMany({
+        where: whereClause,
+        skip: skip || 0,
+        take: take || 5,
+    });
+
+    reply.send(orders);
 }
