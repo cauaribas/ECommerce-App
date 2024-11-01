@@ -1,7 +1,7 @@
 import { Prisma } from "@prisma/client";
 import { FastifyReply, FastifyRequest } from "fastify";
 import { prisma } from "../../lib/prisma";
-import { RegisterProductSchema, UpdateProductSchema } from "../../schema/products";
+import { RegisterProductSchema, SearchSchema, UpdateProductSchema } from "../../schema/products";
 import { NotFoundException } from "../../exceptions/not-found";
 import { ErrorCode } from "../../exceptions/root";
 import { QueryParamsSchema, ParamsSchema } from "../../schema/products";
@@ -103,6 +103,45 @@ export async function fetchAllProducts(request: FastifyRequest, reply: FastifyRe
             },
         });
 
+        reply.send(products);
+    } catch (error) {
+        throw new NotFoundException("Products Not Found", ErrorCode.NOT_FOUND, 404);
+    }
+}
+
+export async function searchProducts(request: FastifyRequest, reply: FastifyReply){
+    try {
+        const query = SearchSchema.safeParse(request.query);
+        
+        if (!query.success) {
+            throw new Error("Search query is required");
+        }
+
+        const q = query.data.q;
+
+        const products = await prisma.product.findMany({
+            where: {
+                OR: [
+                    {
+                        name: {
+                            search: q,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        description: {
+                            search: q,
+                            mode: 'insensitive',
+                        },
+                    },
+                    {
+                        tags: {
+                            search: q,
+                        },
+                    },
+                ],
+            } 
+        });
         reply.send(products);
     } catch (error) {
         throw new NotFoundException("Products Not Found", ErrorCode.NOT_FOUND, 404);
