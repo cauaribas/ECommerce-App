@@ -114,6 +114,8 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `PUT /orders/:id/status`            | Update the status of a specific order   |
 | `PUT /orders/:id/cancel`            | Cancel an order                         |
 
-### 📃 License
+---
+
+## 📃 License
 
 The project is under the license [MIT license](./LICENSE).
