@@ -65,7 +65,7 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `POST /auth/signup` | Register a new user |
 | `POST /auth/login`  | Login a user        |
 
-## Products 🛍️
+### Products 🛍️
 
 | Endpoint                         | Description                            |
 | -------------------------------- | -------------------------------------- |
@@ -76,7 +76,7 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `PATCH /products/:id`            | Update a product by ID                 |
 | `DELETE /products/:id`           | Delete a product by ID                 |
 
-## Users 👤
+### Users 👤
 
 | Endpoint              | Description                        |
 | --------------------- | ---------------------------------- |
@@ -84,7 +84,7 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `GET /users/:id`      | Retrieve a specific user's details |
 | `PUT /users/:id/role` | Update a user's role               |
 
-## User Address 🏠
+### User Address 🏠
 
 | Endpoint                    | Description                     |
 | --------------------------- | ------------------------------- |
@@ -93,7 +93,7 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `PUT /users/address`        | Update an address for the user  |
 | `DELETE /users/address/:id` | Delete a specific address by ID |
 
-## Cart 🛒
+### Cart 🛒
 
 | Endpoint           | Description                        |
 | ------------------ | ---------------------------------- |
@@ -102,7 +102,7 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `PUT /cart/`       | Update a specific item in the cart |
 | `DELETE /cart/:id` | Remove an item from the cart       |
 
-## Order 📦
+### Order 📦
 
 | Endpoint                            | Description                             |
 | ----------------------------------- | --------------------------------------- |
@@ -114,6 +114,6 @@ This project was conducted for studies on REST APIs, developed in TypeScript, ut
 | `PUT /orders/:id/status`            | Update the status of a specific order   |
 | `PUT /orders/:id/cancel`            | Cancel an order                         |
 
-## 📃 License
+### 📃 License
 
 The project is under the license [MIT license](./LICENSE).
